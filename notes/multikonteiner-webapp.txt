@@ -1,0 +1,18 @@
+docker network create webapp
+
+# Backend: PostgreSQL
+docker run -d \
+  --name database \
+  --network webapp \
+  -e POSTGRES_PASSWORD=secret123 \
+  -e POSTGRES_DB=appdb \
+  postgres:15-alpine
+
+# Cache: Redis
+docker run -d \
+  --name cache \
+  --network webapp \
+  redis:alpine
+
+#Test
+docker run --rm --network webapp alpine sh -c 'ping -c 2 database && ping -c 2 cache'
